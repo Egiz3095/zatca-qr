@@ -239,7 +239,7 @@ input[readonly]{background:rgba(255,255,255,.06)!important;color:rgba(255,255,25
 
   let lastBase64 = '';
   // rendered internally at maximum resolution, scaled down via CSS for crisp/print-quality output
-  const QR_RENDER_SIZE = 1200;
+  const QR_RENDER_SIZE = 5000;
 
   function validateVat(v){
     return /^\d{15}$/.test(v) && v[0] === '3' && v[14] === '3';
