@@ -769,6 +769,34 @@ input[type=number], #vatNumber, #cVat, #iNo {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+select {
+  width: 100%;
+  min-height: 44px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--c-text);
+  color-scheme: var(--c-scheme);
+  background-color: var(--c-field);
+  border: 1px solid var(--c-bd-2);
+  border-radius: var(--r-md);
+  padding: 10px 14px 10px 36px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23D2AE62' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 14px center;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast), background-color var(--dur-fast);
+}
+select:hover { border-color: var(--c-bd-3); background-color: var(--c-field-hover); }
+select:focus {
+  border-color: var(--c-accent);
+  background-color: var(--c-field-focus);
+  box-shadow: 0 0 0 3px var(--c-focus-ring);
+}
+select option { background: var(--c-surface); color: var(--c-text); }
 input[type=date], input[type=time] {
   font-family: var(--font-num);
   color-scheme: var(--c-scheme);
@@ -2229,11 +2257,11 @@ const $=id=>document.getElementById(id),r2=x=>Math.round((x+Number.EPSILON)*100)
 f2=x=>x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),
 esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const F=[
-['الفاتورة',[['iNo','رقم الفاتورة'],['iDate','التاريخ','date',1],['iTime','الوقت','time',1]]],
+['الفاتورة',[['iType','نوع الفاتورة','select'],['iNo','رقم الفاتورة'],['iDate','التاريخ','date',1],['iTime','الوقت','time',1]]],
 ['العميل',[['cName','اسم العميل'],['cVat','الرقم الضريبي للعميل'],['cAddr','العنوان'],['iNotes','ملاحظات']]],
 ['البنود',null],
 ['الحسابات',[['iDisc','الخصم المسموح به','number']]]];
-$('invForm').innerHTML=F.map(([t,fs])=>'<div class="group"><p class="gt">'+t+'</p>'+(fs?'<div class="fl">'+fs.map(([id,l,ty,h])=>'<div class="field'+(h?' h':'')+'"><label>'+l+'</label><input id="'+id+'" type="'+(ty||'text')+'"'+(ty=='number'?' step="any" min="0"':'')+(ty=='time'?' step="1"':'')+(ty=='file'?' accept="image/*"':'')+(id=='cVat'?' maxlength="15" inputmode="numeric"':'')+' autocomplete="off"></div>').join('')+'</div>':'<div id="items"></div><button class="btn" id="addRow" type="button" style="width:100%;flex:none;margin-top:6px">+ إضافة بند</button>')+'</div>').join('')+
+$('invForm').innerHTML=F.map(([t,fs])=>'<div class="group"><p class="gt">'+t+'</p>'+(fs?'<div class="fl">'+fs.map(([id,l,ty,h])=>'<div class="field'+(h?' h':'')+'"><label'+(ty=='select'?' for="'+id+'"':'')+'>'+l+'</label>'+(ty=='select'?'<select id="'+id+'"><option value="std">فاتورة ضريبية</option><option value="simp">فاتورة ضريبية مبسطة</option></select><i hidden ':'<input id="'+id+'" type="'+(ty||'text')+'"')+(ty=='number'?' step="any" min="0"':'')+(ty=='time'?' step="1"':'')+(ty=='file'?' accept="image/*"':'')+(id=='cVat'?' maxlength="15" inputmode="numeric"':'')+' autocomplete="off">'+(ty=='select'?'</i>':'')+'</div>').join('')+'</div>':'<div id="items"></div><button class="btn" id="addRow" type="button" style="width:100%;flex:none;margin-top:6px">+ إضافة بند</button>')+'</div>').join('')+
 '<div class="inv-act"><button class="btn" type="button" id="bPrint">طباعة / حفظ PDF</button><button class="btn" type="button" id="bNew">فاتورة جديدة</button></div>';
 const ORG='ABDULLAH ASSAF ALGHUNAIM INDUSTRIAL GASES FACTORY',VAT='300647472400003';
 
@@ -2250,7 +2278,7 @@ let h=A('','right:12.73px;top:122.59px;font-size:13px;color:transparent;user-sel
 +'<img class="a" alt="" style="left:91.69px;top:123.07px;width:65.77px;height:60.01px" src="'+LOGO+'">'
 +A('','left:148.33px;top:183.47px;font-size:11.96px;direction:ltr;'+bd,'V<span style="letter-spacing:-0.65px">A</span>T R. No.')+A('','left:223.23px;top:189.66px;font-size:10.05px;letter-spacing:-0.05px;direction:ltr;'+bd,'300647472400003')+A('','left:361.51px;top:183.47px;font-size:11.96px;'+bd,'الرقم الضريبي')
 +'<svg class="a" style="left:0;top:0;width:596px;height:340px;pointer-events:none" viewBox="0 0 596 340"><rect x="24.48" y="205.37" width="556.63" height="18.96" fill="#c0c0c0"/><path d="M35.28 243.29L568.87 243.53L568.87 243.29L35.28 243.29ZM33.84 243.53L33.12 243.77L34.08 244.01L34.08 243.77L35.28 243.53L33.84 243.53ZM568.87 243.53L570.07 243.77L570.07 243.53L568.87 243.53ZM570.07 243.77L570.79 244.01L571.51 244.25L571.51 244.01L571.03 243.77L570.07 243.77ZM32.40 244.01L31.92 244.25L32.64 244.49L32.64 244.25L33.12 244.01L32.40 244.01ZM571.51 244.25L571.99 244.49L572.95 244.97L572.95 244.73L572.71 244.49L572.23 244.25L571.51 244.25ZM31.44 244.49L31.92 244.73L31.92 244.49L31.44 244.49ZM30.96 244.73L30.72 244.97L31.20 245.21L31.20 244.97L31.44 244.73L30.96 244.73ZM572.95 244.97L573.43 245.21L573.43 244.97L572.95 244.97ZM30.24 245.21L30.00 245.45L30.48 245.69L30.48 245.45L30.72 245.21L30.24 245.21ZM573.43 245.21L573.67 245.45L573.67 245.21L573.43 245.21ZM573.67 245.45L573.91 245.69L574.15 245.93L574.63 246.17L574.63 245.93L574.15 245.45L573.67 245.45ZM29.76 245.69L30.00 245.93L30.00 245.69L29.76 245.69ZM29.52 245.93L29.76 246.17L29.76 245.93L29.52 245.93ZM29.04 246.17L28.80 246.41L28.32 246.89L28.32 247.37L29.52 246.17L29.04 246.17ZM574.63 246.17L574.87 246.41L574.87 246.17L574.63 246.17ZM574.87 246.41L575.11 246.65L575.35 246.89L575.35 246.41L574.87 246.41ZM575.35 246.89L575.59 247.13L575.59 246.89L575.35 246.89ZM575.59 247.13L575.83 247.37L575.83 247.13L575.59 247.13ZM28.08 247.37L28.32 247.61L28.32 247.37L28.08 247.37ZM575.83 247.37L575.83 247.85L576.07 247.85L576.55 248.33L576.55 247.85L576.07 247.37L575.83 247.37ZM27.84 247.61L28.08 247.85L28.08 247.61L27.84 247.61ZM27.60 247.85L27.36 248.09L27.36 248.57L27.60 248.33L27.84 247.85L27.60 247.85ZM576.55 248.33L576.55 248.81L576.79 248.81L577.03 249.05L577.03 248.57L576.79 248.33L576.55 248.33ZM27.12 248.57L26.88 248.81L26.16 250.25L25.92 250.97L25.92 251.93L26.40 250.49L27.36 248.57L27.12 248.57ZM577.03 249.05L577.03 249.53L577.27 249.05L577.03 249.05ZM577.27 249.53L577.27 250.01L577.51 249.53L577.27 249.53ZM577.51 250.01L577.51 250.73L577.75 250.01L577.51 250.01ZM577.75 250.73L577.75 251.45L577.99 251.45L577.99 252.41L578.23 252.41L578.23 318.18L578.47 252.17L578.23 252.17L578.23 251.21L577.99 251.21L577.99 250.73L577.75 250.73ZM25.68 251.93L25.44 253.13L25.44 317.22L25.68 317.22L25.68 318.42L25.92 316.98L25.68 316.98L25.68 253.37L25.92 251.93L25.68 251.93ZM577.99 318.18L577.99 319.14L578.23 318.18L577.99 318.18ZM25.92 318.42L25.92 319.38L26.16 318.42L25.92 318.42ZM577.75 319.14L577.75 319.86L577.99 319.14L577.75 319.14ZM26.16 319.38L26.16 320.10L26.40 320.10L26.40 320.58L26.64 319.86L26.40 319.86L26.40 319.38L26.16 319.38ZM577.51 319.86L577.51 320.34L577.75 319.86L577.51 319.86ZM577.27 320.34L577.27 320.82L577.51 320.34L577.27 320.34ZM26.64 320.58L26.64 321.06L26.88 320.58L26.64 320.58ZM577.03 320.82L577.03 321.30L577.27 320.82L577.03 320.82ZM26.88 321.06L26.88 321.54L27.12 321.54L27.36 321.78L27.36 321.30L27.12 321.06L26.88 321.06ZM576.79 321.30L576.79 321.78L577.03 321.30L576.79 321.30ZM27.36 321.78L27.36 322.26L27.60 321.78L27.36 321.78ZM576.55 321.78L576.79 322.02L576.79 321.78L576.55 321.78ZM576.31 322.02L576.07 322.26L576.07 322.74L576.31 322.50L576.55 322.02L576.31 322.02ZM27.60 322.26L27.84 322.50L27.84 322.26L27.60 322.26ZM27.84 322.50L28.08 322.74L28.08 322.50L27.84 322.50ZM28.08 322.74L28.08 323.22L28.32 323.22L28.80 323.70L28.80 323.22L28.32 322.74L28.08 322.74ZM575.83 322.74L576.07 322.98L576.07 322.74L575.83 322.74ZM575.59 322.98L575.83 323.22L575.83 322.98L575.59 322.98ZM575.35 323.22L575.11 323.46L574.63 323.94L575.11 324.18L575.11 323.94L575.35 323.70L575.59 323.22L575.35 323.22ZM28.80 323.70L29.04 323.94L29.28 324.18L29.76 324.42L29.76 324.18L29.28 323.70L28.80 323.70ZM574.39 324.18L574.63 324.42L574.63 324.18L574.39 324.18ZM29.76 324.42L30.00 324.66L30.00 324.42L29.76 324.42ZM574.15 324.42L574.39 324.66L574.39 324.42L574.15 324.42ZM30.00 324.66L30.24 324.90L30.24 324.66L30.00 324.66ZM573.67 324.66L573.43 324.90L573.91 325.14L573.91 324.90L574.15 324.66L573.67 324.66ZM30.24 324.90L30.48 325.14L30.96 325.38L30.96 325.14L30.72 324.90L30.24 324.90ZM572.95 325.14L572.71 325.38L573.19 325.62L573.19 325.38L573.43 325.14L572.95 325.14ZM30.96 325.38L31.44 325.62L31.44 325.38L30.96 325.38ZM31.44 325.62L31.92 325.86L31.92 325.62L31.44 325.62ZM572.23 325.62L572.71 325.86L572.71 325.62L572.23 325.62ZM31.92 325.86L32.40 326.10L32.40 325.86L31.92 325.86ZM571.75 325.86L572.23 326.10L572.23 325.86L571.75 325.86ZM32.40 326.10L33.12 326.34L33.12 326.10L32.40 326.10ZM571.03 326.10L571.75 326.34L571.75 326.10L571.03 326.10ZM33.12 326.34L33.84 326.58L33.84 326.34L33.12 326.34ZM570.31 326.34L571.03 326.58L571.03 326.34L570.31 326.34ZM33.84 326.58L34.80 326.82L34.80 326.58L33.84 326.58ZM569.11 326.58L570.31 326.82L570.31 326.58L569.11 326.58ZM34.80 326.82L569.11 327.06L569.11 326.82L34.80 326.82ZM24.00 521.49L577.99 521.49M577.99 521.49L577.99 540.45M577.99 540.45L24.00 540.45M24.00 521.49L24.00 540.45M25.44 328.02L577.51 328.02M577.51 327.30L577.51 363.79M526.63 327.30L526.63 363.79M285.88 327.30L285.88 363.79M245.07 327.30L245.07 363.79M180.74 327.30L180.74 363.79M109.45 327.30L109.45 363.79M25.44 327.30L25.44 498.92M25.44 363.79L577.51 363.79M25.44 345.79L577.51 345.79M109.69 363.79L109.69 471.80M24.96 382.27L109.45 382.27M26.88 406.27L109.45 406.27M24.96 430.27L109.45 430.27M25.44 447.80L109.93 447.80M25.44 471.80L109.93 471.80M200.43 521.97L200.43 540.69M407.57 521.97L407.57 539.97M23.04 813.60L578.23 813.60" fill="#000"/></svg>'
-+A('','left:274.12px;top:205.53px;font-size:11.96px;word-spacing:0.40px;'+bd,'فاتورة ضريبية')
++A('pTitle','left:274.12px;top:205.53px;font-size:11.96px;word-spacing:0.40px;'+bd,'فاتورة ضريبية')
 +A('','right:24.71px;top:228.54px;font-size:10.05px;color:#f00;'+bd,'رقم الفاتورة')+A('','left:514.62px;top:225.47px;font-size:12.92px;'+bd,':')+A('pNo','right:84.65px;top:225.60px;font-size:12.92px;letter-spacing:-0.58px;direction:ltr;'+bd)
 +A('','left:146.69px;top:228.70px;font-size:10.05px;'+bd,'التاريخ')+A('','left:125.77px;top:223.35px;font-size:12.92px;'+bd,':')+A('pDate','left:69.12px;top:228.54px;font-size:10.05px;direction:ltr')
 +A('','right:21.12px;top:249.82px;font-size:10.05px;letter-spacing:-0.06px;'+bd,'العميـــــــــــــل')+A('','left:512.46px;top:249.07px;font-size:11.96px;'+bd,':')+A('cN','right:94.98px;top:249.47px;font-size:12.92px;word-spacing:0.21px;'+bd)
@@ -2344,7 +2372,12 @@ function b64(a,b,c,d,e){const x=[...tlv(1,a),...tlv(2,b),...tlv(3,c),...tlv(4,d)
 function fit(){const f=$('fit'),w=f.clientWidth;if(!w)return;const s=w/596,e=$('sheet');e.style.transform='scale('+s+')';f.style.height=Math.ceil(e.offsetHeight*s)+'px'}
 function calc(){
 const v=id=>$(id).value.trim(),S=(id,t)=>{$(id).textContent=t};
-S('pNo',v('iNo').replace(/^\d+$/,m=>m.replace(/\B(?=(\d{3})+(?!\d))/g,',')));
+const sm=$('iType').value==='simp',tt=$('pTitle');
+  tt.textContent=sm?'فاتورة ضريبية مبسطة':'فاتورة ضريبية';
+  tt.style.left=sm?'24.48px':'274.12px';
+  tt.style.width=sm?'556.63px':'';
+  tt.style.textAlign=sm?'center':'';
+  S('pNo',v('iNo').replace(/^\d+$/,m=>m.replace(/\B(?=(\d{3})+(?!\d))/g,',')));
 S('pDate',v('iDate').replace(/-/g,'/'));
 const cv=v('cVat'),cvOk=/^3\d{13}3$/.test(cv);$('cVat').classList.toggle('invalid',cv.length>0&&!cvOk);S('cN',v('cName'));S('cV',cvOk?cv:'');S('cA',v('cAddr'));S('cNt',v('iNotes'));
 let g=0,h='',n=0;
