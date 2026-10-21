@@ -2379,7 +2379,7 @@ const sm=$('iType').value==='simp',tt=$('pTitle');
   tt.style.textAlign=sm?'center':'';
   S('pNo',v('iNo').replace(/^\d+$/,m=>m.replace(/\B(?=(\d{3})+(?!\d))/g,',')));
 S('pDate',v('iDate').replace(/-/g,'/'));
-const cv=v('cVat'),cvOk=/^3\d{13}3$/.test(cv);$('cVat').classList.toggle('invalid',cv.length>0&&!cvOk);S('cN',v('cName'));S('cV',cvOk?cv:'');S('cA',v('cAddr'));S('cNt',v('iNotes'));
+const cv=v('cVat'),cvOk=/^3\d{13}3$/.test(cv);$('cVat').classList.toggle('invalid',cv.length>0&&!cvOk);if(sm)$('cAddr').classList.remove('invalid');S('cN',v('cName'));S('cV',cvOk?cv:'');S('cA',v('cAddr'));S('cNt',v('iNotes'));
 let g=0,h='',n=0;
 const RW=(c,nm,u,q,p,t)=>'<div class="r"><svg class="a" style="left:0;top:0;width:596px;height:18px;pointer-events:none;overflow:visible" viewBox="0 0 596 18"><path d="M25.44 18H577.51M25.44 0V18M109.45 0V18M180.74 0V18M245.07 0V18M285.88 0V18M526.63 0V18M577.51 0V18" stroke="#000" stroke-width="0.48" fill="none"/></svg><i class="c6">'+t+'</i><i class="c5">'+p+'</i><i class="c4">'+q+'</i><i class="c3">'+u+'</i><i class="c2">'+nm+'</i><i class="c1">'+c+'</i></div>';
 rows.forEach(r=>{if(!r.ok)return;const q=parseFloat(r.q)||0,p=parseFloat(r.p)||0,t=r2(q*p);g+=t;n++;h+=RW(esc(r.c||''),esc(r.n||''),esc(r.u||''),f2(q),f2(p),f2(t))});
@@ -2393,7 +2393,7 @@ if(q!==lastQ){lastQ=q;const e=$('pQr');e.innerHTML='';if(q)new QRCode(e,{text:q,
 fit()}
 
 $('invForm').addEventListener('input',e=>{const t=e.target;if(t.id){if(t.id!='cVat'&&t.value.trim())t.classList.remove('invalid');calc()}else if((t.dataset.k=='q'||t.dataset.k=='p')&&parseFloat(t.value)>0)t.classList.remove('bad')});
-$('bPrint').onclick=()=>{const v=id=>$(id).value.trim(),cvOk=/^3\d{13}3$/.test(v('cVat'));let ok=true;['iNo','iDate','iTime','cName','cAddr'].forEach(id=>{const b=!v(id);$(id).classList.toggle('invalid',b);if(b)ok=false});$('cVat').classList.toggle('invalid',!cvOk);if(!cvOk)ok=false;[...$('items').children].forEach((el,i)=>{const r=rows[i]||{},cOk=!!r.ok,qOk=parseFloat(r.q)>0,pOk=parseFloat(r.p)>0;el.querySelector('[data-k=c]').classList.toggle('bad',!cOk);el.querySelector('[data-k=q]').classList.toggle('bad',!qOk);el.querySelector('[data-k=p]').classList.toggle('bad',!pOk);if(!cOk||!qOk||!pOk)ok=false});const dv=v('iDisc'),g=r2(rows.reduce((a,r)=>a+(r.ok?r2((parseFloat(r.q)||0)*(parseFloat(r.p)||0)):0),0)),dBad=dv!==''&&(!(parseFloat(dv)>=0)||parseFloat(dv)>=g);$('iDisc').classList.toggle('invalid',dBad);if(dBad)ok=false;if(!ok){const f=$('invForm').querySelector('.invalid,.bad');if(f)f.focus();return}window.print()};
+$('bPrint').onclick=()=>{const v=id=>$(id).value.trim(),cvOk=/^3\d{13}3$/.test(v('cVat')),sm=$('iType').value==='simp';let ok=true;['iNo','iDate','iTime','cName','cAddr'].forEach(id=>{const b=!v(id)&&!(sm&&id=='cAddr');$(id).classList.toggle('invalid',b);if(b)ok=false});const cvBad=sm?(v('cVat')!==''&&!cvOk):!cvOk;$('cVat').classList.toggle('invalid',cvBad);if(cvBad)ok=false;[...$('items').children].forEach((el,i)=>{const r=rows[i]||{},cOk=!!r.ok,qOk=parseFloat(r.q)>0,pOk=parseFloat(r.p)>0;el.querySelector('[data-k=c]').classList.toggle('bad',!cOk);el.querySelector('[data-k=q]').classList.toggle('bad',!qOk);el.querySelector('[data-k=p]').classList.toggle('bad',!pOk);if(!cOk||!qOk||!pOk)ok=false});const dv=v('iDisc'),g=r2(rows.reduce((a,r)=>a+(r.ok?r2((parseFloat(r.q)||0)*(parseFloat(r.p)||0)):0),0)),dBad=dv!==''&&(!(parseFloat(dv)>=0)||parseFloat(dv)>=g);$('iDisc').classList.toggle('invalid',dBad);if(dBad)ok=false;if(!ok){const f=$('invForm').querySelector('.invalid,.bad');if(f)f.focus();return}window.print()};
 $('bNew').onclick=()=>{['iNo','iDate','iTime','iNotes','cName','cVat','cAddr','iDisc'].forEach(i=>{$(i).value='';$(i).classList.remove('invalid')});rows=[{}];drawRows();calc()};
 /* التنقل بين التبويبين (بدون أي مزامنة: رمز QR مستقل تمامًا عن الفاتورة) */
 function route(){
@@ -2991,8 +2991,9 @@ drawRows();route();calc();
     if(!v('iDate')) missing.push({ id: 'iDate', label: 'تاريخ الفاتورة' });
     if(!v('iTime')) missing.push({ id: 'iTime', label: 'وقت الفاتورة' });
     if(!v('cName')) missing.push({ id: 'cName', label: 'اسم العميل' });
-    if(!vatOk(v('cVat'))) missing.push({ id: 'cVat', label: 'الرقم الضريبي للعميل (15 رقمًا يبدأ وينتهي بـ 3)' });
-    if(!v('cAddr')) missing.push({ id: 'cAddr', label: 'عنوان العميل' });
+    var simp = $('iType') && $('iType').value === 'simp';
+    if(simp ? (v('cVat') && !vatOk(v('cVat'))) : !vatOk(v('cVat'))) missing.push({ id: 'cVat', label: 'الرقم الضريبي للعميل (15 رقمًا يبدأ وينتهي بـ 3)' });
+    if(!simp && !v('cAddr')) missing.push({ id: 'cAddr', label: 'عنوان العميل' });
 
     if(itemsContainer){
       Array.from(itemsContainer.children).forEach(function(rowEl, idx){
