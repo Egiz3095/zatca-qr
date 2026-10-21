@@ -2282,8 +2282,8 @@ let h=A('','right:12.73px;top:122.59px;font-size:13px;color:transparent;user-sel
 +A('','right:24.71px;top:228.54px;font-size:10.05px;color:#f00;'+bd,'رقم الفاتورة')+A('','left:514.62px;top:225.47px;font-size:12.92px;'+bd,':')+A('pNo','right:84.65px;top:225.60px;font-size:12.92px;letter-spacing:-0.58px;direction:ltr;'+bd)
 +A('','left:146.69px;top:228.70px;font-size:10.05px;'+bd,'التاريخ')+A('','left:125.77px;top:223.35px;font-size:12.92px;'+bd,':')+A('pDate','left:69.12px;top:228.54px;font-size:10.05px;direction:ltr')
 +A('','right:21.12px;top:249.82px;font-size:10.05px;letter-spacing:-0.06px;'+bd,'العميـــــــــــــل')+A('','left:512.46px;top:249.07px;font-size:11.96px;'+bd,':')+A('cN','right:94.98px;top:249.47px;font-size:12.92px;word-spacing:0.21px;'+bd)
-+A('','right:19.90px;top:269.33px;font-size:10.05px;'+bd,'رقمه الضريبي')+A('','left:514.86px;top:268.66px;font-size:11.96px;'+bd,':')+A('cV','right:89.01px;top:267.47px;font-size:12.92px;direction:ltr;'+bd)
-+A('','right:221.65px;top:270.02px;font-size:10.05px;'+bd,'عنوانه')+A('cA','right:256.86px;top:267.82px;font-size:11.01px;word-spacing:0.13px;'+bd)
++A('pVL','right:19.90px;top:269.33px;font-size:10.05px;'+bd,'رقمه الضريبي')+A('pVC','left:514.86px;top:268.66px;font-size:11.96px;'+bd,':')+A('cV','right:89.01px;top:267.47px;font-size:12.92px;direction:ltr;'+bd)
++A('pAL','right:221.65px;top:270.02px;font-size:10.05px;'+bd,'عنوانه')+A('cA','right:256.86px;top:267.82px;font-size:11.01px;word-spacing:0.13px;'+bd)
 +A('','right:26.56px;top:291.82px;font-size:10.05px;'+bd,'ملاحظــــــات')+A('','left:514.62px;top:291.44px;font-size:12.92px;'+bd,':')+A('cNt','right:86.81px;top:291.82px;font-size:10.05px;word-spacing:-0.08px;'+bd)
 +'<div class="a" style="left:0;top:327.30px;width:596px"><div class="r hd"><svg class="a" style="left:0;top:0;width:596px;height:19px;pointer-events:none;overflow:visible" viewBox="0 0 596 19"><path d="M25.44 0.72H577.51M25.44 18.49H577.51M25.44 0V18.49M109.45 0V18.49M180.74 0V18.49M245.07 0V18.49M285.88 0V18.49M526.63 0V18.49M577.51 0V18.49" stroke="#000" stroke-width="0.48" fill="none"/></svg><i class="c6">القيمة</i><i class="c5">السعر</i><i class="c4">الكمية</i><i class="c3">الوحدة</i><i class="c2">اسم الصنف</i><i class="c1">كود الصنف</i></div></div>'
 +'<div class="a" id="pRows" style="left:0;top:345.79px;width:596px"></div>'
@@ -2379,7 +2379,7 @@ const sm=$('iType').value==='simp',tt=$('pTitle');
   tt.style.textAlign=sm?'center':'';
   S('pNo',v('iNo').replace(/^\d+$/,m=>m.replace(/\B(?=(\d{3})+(?!\d))/g,',')));
 S('pDate',v('iDate').replace(/-/g,'/'));
-const cv=v('cVat'),cvOk=/^3\d{13}3$/.test(cv);$('cVat').classList.toggle('invalid',cv.length>0&&!cvOk);if(sm)$('cAddr').classList.remove('invalid');S('cN',v('cName'));S('cV',cvOk?cv:'');S('cA',v('cAddr'));S('cNt',v('iNotes'));
+const cv=v('cVat'),cvOk=/^3\d{13}3$/.test(cv);$('cVat').classList.toggle('invalid',cv.length>0&&!cvOk);if(sm)$('cAddr').classList.remove('invalid');['pVL','pVC','cV','pAL','cA'].forEach(i=>$(i).style.visibility=sm?'hidden':'');S('cN',v('cName'));S('cV',cvOk?cv:'');S('cA',v('cAddr'));S('cNt',v('iNotes'));
 let g=0,h='',n=0;
 const RW=(c,nm,u,q,p,t)=>'<div class="r"><svg class="a" style="left:0;top:0;width:596px;height:18px;pointer-events:none;overflow:visible" viewBox="0 0 596 18"><path d="M25.44 18H577.51M25.44 0V18M109.45 0V18M180.74 0V18M245.07 0V18M285.88 0V18M526.63 0V18M577.51 0V18" stroke="#000" stroke-width="0.48" fill="none"/></svg><i class="c6">'+t+'</i><i class="c5">'+p+'</i><i class="c4">'+q+'</i><i class="c3">'+u+'</i><i class="c2">'+nm+'</i><i class="c1">'+c+'</i></div>';
 rows.forEach(r=>{if(!r.ok)return;const q=parseFloat(r.q)||0,p=parseFloat(r.p)||0,t=r2(q*p);g+=t;n++;h+=RW(esc(r.c||''),esc(r.n||''),esc(r.u||''),f2(q),f2(p),f2(t))});
